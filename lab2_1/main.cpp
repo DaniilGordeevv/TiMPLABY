@@ -5,7 +5,6 @@
 
 using namespace std;
 
-// Функции для конвертации между string и wstring
 wstring string_to_wstring(const string& str) {
     wstring_convert<codecvt_utf8<wchar_t>> converter;
     return converter.from_bytes(str);
@@ -53,11 +52,9 @@ void check(const string& Text, const string& key, const bool destructCipherText 
 
 int main()
 {
-    // Устанавливаем локаль безопасным способом
     try {
-        locale::global(locale("")); // Системная локаль по умолчанию
+        locale::global(locale(""));
     } catch (...) {
-        // Игнорируем ошибки инициализации локали
     }
     
     cout << "Тестирование шифра:" << endl;
