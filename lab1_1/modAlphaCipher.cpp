@@ -9,7 +9,6 @@ using namespace std;
 
 modAlphaCipher::modAlphaCipher(const wstring& skey)
 {
-    // Инициализируем алфавит и маппинг
     for(unsigned i = 0; i < numAlpha.size(); i++) {
         alphaNum[numAlpha[i]] = i;
     }
