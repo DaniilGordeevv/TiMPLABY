@@ -6,11 +6,9 @@
 
 using namespace std;
 
-// проверка, чтобы строка состояла только из русских букв
 bool isValid(const wstring& s)
 {
     for(auto c : s) {
-        // Проверяем, что символ находится в русском алфавите ВЕРХНЕГО регистра
         if(c < L'А' || c > L'Я') {
             if(c != L'Ё') // отдельно проверяем Ё
                 return false;
@@ -19,7 +17,6 @@ bool isValid(const wstring& s)
     return true;
 }
 
-// Функция для преобразования в верхний регистр для русских букв
 wstring to_upper_rus(const wstring& s) {
     wstring result = s;
     for (auto& c : result) {
@@ -35,13 +32,11 @@ wstring to_upper_rus(const wstring& s) {
     return result;
 }
 
-// Функция для преобразования string в wstring
 wstring to_wide(const string& narrow_str) {
     wstring_convert<codecvt_utf8<wchar_t>> converter;
     return converter.from_bytes(narrow_str);
 }
 
-// Функция для преобразования wstring в string
 string to_narrow(const wstring& wide_str) {
     wstring_convert<codecvt_utf8<wchar_t>> converter;
     return converter.to_bytes(wide_str);
