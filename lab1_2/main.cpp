@@ -22,7 +22,7 @@ int main() {
         return 1;
     }
     cout<<"Ключ загружен\n";
-    modCipher shifr(key);
+    TableRouteCipher shifr(key);
     do {
         cout << "Шифратор готов. Выберите опрецию (Выход-0, Шифрока-1, Расшифровка-2): ";
         cin >> vibor;
