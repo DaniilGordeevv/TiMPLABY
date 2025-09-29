@@ -10,7 +10,7 @@ bool isValid(const wstring& s)
 {
     for(auto c : s) {
         if(c < L'А' || c > L'Я') {
-            if(c != L'Ё') // отдельно проверяем Ё
+            if(c != L'Ё')
                 return false;
         }
     }
@@ -20,7 +20,6 @@ bool isValid(const wstring& s)
 wstring to_upper_rus(const wstring& s) {
     wstring result = s;
     for (auto& c : result) {
-        // Русские строчные буквы -> прописные
         if (c >= L'а' && c <= L'я') {
             c = c - L'а' + L'А';
         } 
@@ -54,7 +53,7 @@ int main()
     cin >> key_input;
     
     wstring key = to_wide(key_input);
-    key = to_upper_rus(key); // Используем нашу функцию вместо transform
+    key = to_upper_rus(key);
     
     if(!isValid(key)) {
         cerr << "Ключ недействителен! Используйте только русские буквы.\n";
@@ -72,11 +71,11 @@ int main()
             cout << "Неверная операция\n";
         } else if(op > 0) {
             cout << "Введите текст: ";
-            cin.ignore(); // Очищаем буфер
-            getline(cin, text_input); // Читаем всю строку
+            cin.ignore();
+            getline(cin, text_input);
             
             wstring text = to_wide(text_input);
-            text = to_upper_rus(text); // Используем нашу функцию вместо transform
+            text = to_upper_rus(text);
             
             if(isValid(text)) {
                 if(op == 1) {
