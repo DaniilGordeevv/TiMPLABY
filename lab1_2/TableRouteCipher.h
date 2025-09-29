@@ -5,12 +5,12 @@
 
 using namespace std;
 
-class modCipher {
+class TableRouteCipher {
     private:
         int key;
     public:
-        modCipher()=delete;
-        modCipher(int skey);
+        TableRouteCipher()=delete;
+        TableRouteCipher(int skey);
         string encrypt(string &text);
         string decrypt(string &text);
 };
