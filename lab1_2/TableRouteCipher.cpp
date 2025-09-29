@@ -1,8 +1,8 @@
-#include "modCipher.h"
+#include "TableRouteCipher.h"
 
-modCipher::modCipher(int skey) { key = skey; }
+TableRouteCipher::TableRouteCipher(int skey) { key = skey; }
 
-string modCipher ::encrypt(string& text)
+string TableRouteCipher ::encrypt(string& text)
 {
     int k = 0;
     int simvoli = text.size();
@@ -26,7 +26,7 @@ string modCipher ::encrypt(string& text)
     return text;
 }
 
-string modCipher ::decrypt(string& text)
+string TableRouteCipher ::decrypt(string& text)
 {
     int k = 0;
     int simvoli = text.size();
