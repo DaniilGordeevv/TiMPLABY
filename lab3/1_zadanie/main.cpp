@@ -1,5 +1,5 @@
 #include <UnitTest++/UnitTest++.h>
-#include </home/24pt203@ibst.psu/lab3/modAlphaCipher.h>
+#include "modAlphaCipher.h"
 
 SUITE(KeyTest)
 {
