@@ -3,7 +3,6 @@
 #include <codecvt>
 #include <iostream>
 
-// Глобальные объекты для конвертации
 std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> codec;
 
 modAlphaCipher::modAlphaCipher(const std::string& skey) {
@@ -11,8 +10,6 @@ modAlphaCipher::modAlphaCipher(const std::string& skey) {
         alphaNum[numAlpha[i]]=i;
     key = convert(getValidKey(skey));
     
-    // ИСПРАВЛЕННАЯ ПРОВЕРКА НА СЛАБЫЙ КЛЮЧ
-    // Ключ считается слабым, если все символы одинаковые И длина больше 1
     if (key.size() > 1) {
         bool allSame = true;
         for (size_t i = 1; i < key.size(); i++) {
@@ -24,7 +21,6 @@ modAlphaCipher::modAlphaCipher(const std::string& skey) {
         if (allSame)
             throw cipher_error("WeakKey");
     }
-    // Ключ из одного символа НЕ считается слабым
 }
 
 std::string modAlphaCipher::encrypt(const std::string& open_text) {
