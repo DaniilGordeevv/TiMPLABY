@@ -4,29 +4,27 @@
 #include <map>
 #include <stdexcept>
 
-using namespace std;
+class cipher_error: public std::invalid_argument {
+    public:
+        explicit cipher_error (const std::string& what_arg):
+        std::invalid_argument(what_arg) {}
+        explicit cipher_error (const char* what_arg):
+        std::invalid_argument(what_arg) {}
+};
 
 class modAlphaCipher {
     private:
-        wstring numAlpha = L"АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
-        map <char,int> alphaNum;
-        vector <int> key;
-        vector<int> convert(const string& s);
-        string convert(const vector<int>& v);
-        string getValidKey(const string & s);
-        string getValidOpenText(const string & s);
-        string getValidCipherText(const string & s);
+        std::wstring numAlpha = L"АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
+        std::map<wchar_t,int> alphaNum;
+        std::vector<int> key;
+        std::vector<int> convert(const std::string& s);
+        std::string convert(const std::vector<int>& v);
+        std::string getValidKey(const std::string & s);
+        std::string getValidOpenText(const std::string & s);
+        std::string getValidCipherText(const std::string & s);
     public:
         modAlphaCipher()=delete;
-        modAlphaCipher(const string& skey);
-        string encrypt(const string& open_text);
-        string decrypt(const string& cipher_text);
-};
-
-class cipher_error: public invalid_argument {
-    public:
-        explicit cipher_error (const string& what_arg):
-        invalid_argument(what_arg) {}
-        explicit cipher_error (const char* what_arg):
-        invalid_argument(what_arg) {}
+        modAlphaCipher(const std::string& skey);
+        std::string encrypt(const std::string& open_text);
+        std::string decrypt(const std::string& cipher_text);
 };
