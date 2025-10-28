@@ -1,105 +1,110 @@
 #include "modAlphaCipher.h"
 #include <locale>
 #include <codecvt>
+#include <iostream>
 
-locale loc("ru_RU.UTF-8");
+// Глобальные объекты для конвертации
+std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> codec;
 
-wstring_convert<codecvt_utf8<wchar_t>, wchar_t> codec;
-using namespace std;
-
-modAlphaCipher::modAlphaCipher(const string& skey) {
+modAlphaCipher::modAlphaCipher(const std::string& skey) {
     for (unsigned i=0; i < numAlpha.size(); i++)
         alphaNum[numAlpha[i]]=i;
     key = convert(getValidKey(skey));
-    int n = 0;
-    for (auto e : key) {
-        if (e == 0)
-            n++;
+    
+    // ИСПРАВЛЕННАЯ ПРОВЕРКА НА СЛАБЫЙ КЛЮЧ
+    // Ключ считается слабым, если все символы одинаковые И длина больше 1
+    if (key.size() > 1) {
+        bool allSame = true;
+        for (size_t i = 1; i < key.size(); i++) {
+            if (key[i] != key[0]) {
+                allSame = false;
+                break;
+            }
+        }
+        if (allSame)
+            throw cipher_error("WeakKey");
     }
-    if (2 * n > key.size())
-        throw cipher_error("WeakKey");
+    // Ключ из одного символа НЕ считается слабым
 }
 
-string modAlphaCipher::encrypt(const string& open_text) {
-    vector<int> work = convert(getValidOpenText(open_text));
+std::string modAlphaCipher::encrypt(const std::string& open_text) {
+    std::vector<int> work = convert(getValidOpenText(open_text));
     for(unsigned i=0; i < work.size(); i++)
-        work[i] = (work[i] + key[i % key.size()]) %
-                  alphaNum.size();
+        work[i] = (work[i] + key[i % key.size()]) % alphaNum.size();
     return convert(work);
 }
 
-string modAlphaCipher::decrypt(const string& cipher_text) {
-    vector<int> work = convert(getValidCipherText(cipher_text));
+std::string modAlphaCipher::decrypt(const std::string& cipher_text) {
+    std::vector<int> work = convert(getValidCipherText(cipher_text));
     for(unsigned i=0; i < work.size(); i++)
-        work[i] = (work[i] + alphaNum.size() - key[i %
-                   key.size()]) % alphaNum.size();
+        work[i] = (work[i] + alphaNum.size() - key[i % key.size()]) % alphaNum.size();
     return convert(work);
 }
 
-inline vector<int> modAlphaCipher::convert(const string& s) {
-    wstring ws = codec.from_bytes(s);
-    vector<int> result;
+std::vector<int> modAlphaCipher::convert(const std::string& s) {
+    std::wstring ws = codec.from_bytes(s);
+    std::vector<int> result;
     for(auto c:ws)
         result.push_back(alphaNum[c]);
     return result;
 }
 
-inline string modAlphaCipher::convert(const vector<int>& v) {
-    string result;
-    wstring ws = codec.from_bytes(result);
+std::string modAlphaCipher::convert(const std::vector<int>& v) {
+    std::wstring ws;
     for(auto i:v)
         ws.push_back(numAlpha[i]);
-    result = codec.to_bytes(ws);
+    std::string result = codec.to_bytes(ws);
     return result;
 }
 
-inline string modAlphaCipher::getValidKey(const string & s) {
-    wstring ws = codec.from_bytes(s);
-    string mp;
-    wstring tmp = codec.from_bytes(mp);
-    tmp = ws;
-    if (tmp.empty())
+std::string modAlphaCipher::getValidKey(const std::string & s) {
+    std::wstring ws = codec.from_bytes(s);
+    if (ws.empty())
         throw cipher_error("Пустой ключ");
-    int razmer = tmp.size();
-    for (int i = 0; i < razmer; i++) {
-    if(tmp[i] < L'А' || tmp[i] > L'я')
-        throw cipher_error(string ("Неверный ключ: ") + s);
-            if (tmp[i] >= L'а' && tmp[i] <= L'я')
-            tmp[i] -= 32;
-        }
-    mp = codec.to_bytes(tmp);
+    
+    std::wstring tmp = ws;
+    for (auto& c : tmp) {
+        if(c < L'А' || c > L'я')
+            throw cipher_error("Неверный ключ: содержит не-буквенные символы");
+        if (c >= L'а' && c <= L'я')
+            c -= 32;
+    }
+    
+    std::string mp = codec.to_bytes(tmp);
     return mp;
 }
 
-inline string modAlphaCipher::getValidOpenText(const string & s) {
-    string mp;
-    wstring tmp = codec.from_bytes(mp);
-    wstring ws = codec.from_bytes(s);
+std::string modAlphaCipher::getValidOpenText(const std::string & s) {
+    std::wstring ws = codec.from_bytes(s);
+    std::wstring tmp;
+    
     for (auto c:ws) {
         if (c >= L'А' && c <= L'я') {
             if (c >= L'а' && c <= L'я')
-                tmp.push_back(c -= 32);
+                tmp.push_back(c - 32);
             else
                 tmp.push_back(c);
         }
     }
+    
     if (tmp.empty())
         throw cipher_error("Отсутствует открытый текст!"); 
-    mp = codec.to_bytes(tmp);
+    
+    std::string mp = codec.to_bytes(tmp);
     return mp;
 }
 
-inline string modAlphaCipher::getValidCipherText(const string & s) {
-    string mp;
-    wstring tmp = codec.from_bytes(mp);
-    wstring ws = codec.from_bytes(s);
-    tmp = ws;
-    if (tmp.empty())
+std::string modAlphaCipher::getValidCipherText(const std::string & s) {
+    std::wstring ws = codec.from_bytes(s);
+    
+    if (ws.empty())
         throw cipher_error("Empty cipher text");
-    for (auto c:tmp) {
+    
+    for (auto c:ws) {
         if ((c < L'А' || c > L'Я') && c != L'Ё')
-            throw cipher_error(string("Неправельный зашифрованный текст! ")+s);
+            throw cipher_error("Неправильный зашифрованный текст!");
     }
-    mp = codec.to_bytes(tmp);
+    
+    std::string mp = codec.to_bytes(ws);
     return mp;
 }
