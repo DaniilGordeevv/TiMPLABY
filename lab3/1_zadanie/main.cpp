@@ -44,16 +44,16 @@ struct KeyB_fixture {
 SUITE(EncryptTest)
 {
     TEST_FIXTURE(KeyB_fixture, UpCaseString) {
-        CHECK_EQUAL("ШСЪЦДСОЯЫЗЖЗРЗЁ", p->encrypt("ХОЧУБОЛЬШЕДЕНЕГ"));
+        CHECK_EQUAL("СДЗЖШСУ", p->encrypt("ОБЕДХОР"));
     }
     TEST_FIXTURE(KeyB_fixture, LowCaseString) {
-        CHECK_EQUAL("ШСЪЦДСОЯЫЗЖЗРЗЁ", p->encrypt("хочубольшеденег"));
+        CHECK_EQUAL("СДЗЖШСУ", p->encrypt("обедхор"));
     }
     TEST_FIXTURE(KeyB_fixture, StringWithWhitspaceAndPunct) {
-        CHECK_EQUAL("ШСЪЦДСОЯЫЗЖЗРЗЁ", p->encrypt("ХОЧУ БОЛЬШЕ ДЕНЕГ!"));
+        CHECK_EQUAL("СДЗЖШСУ", p->encrypt("ОБЕД ХОР!"));
     }
     TEST_FIXTURE(KeyB_fixture, StringWithNumbers) {
-        CHECK_EQUAL("ДСОЯЫЗЖЗРЗЁ", p->encrypt("55БОЛЬШЕДЕНЕГ"));
+        CHECK_EQUAL("СДЗЖШСУ", p->encrypt("55ОБЕДХОР"));
     }
     TEST_FIXTURE(KeyB_fixture, EmptyString) {
         CHECK_THROW(p->encrypt(""), cipher_error);
@@ -62,7 +62,7 @@ SUITE(EncryptTest)
         CHECK_THROW(p->encrypt("3*3=9?"), cipher_error);
     }
     TEST(MaxShiftKey) {
-        CHECK_EQUAL("ФНЦТАНКЫЧДГДМДВ", modAlphaCipher("Я").encrypt("ХОЧУБОЛЬШЕДЕНЕГ"));
+        CHECK_EQUAL("НАДГФНП", modAlphaCipher("Я").encrypt("ОБЕДХОР"));
     }
 }
 
